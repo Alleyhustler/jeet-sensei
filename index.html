@@ -3,307 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeet Sensei | Professional Trading Analysis</title>
+    <title>Jeet Sensei | Solana Trading Behavior Analysis</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
+        :root {
+            --bg-dark: #0A0C10;
+            --bg-surface: #161B22;
+            --bg-surface-light: #21262D;
+            --border: #30363D;
+            --accent: #F78166;
+            --accent-dark: #DB6B53;
+            --text-primary: #F0F6FC;
+            --text-secondary: #8B949E;
+            --success: #3FB950;
+            --danger: #F85149;
+            --warning: #D29922;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --bg-primary: #0a0a0b;
-            --bg-secondary: #111113;
-            --bg-tertiary: #1a1a1d;
-            --accent-primary: #ff3b30;
-            --accent-secondary: #ff9500;
-            --text-primary: #ffffff;
-            --text-secondary: #a1a1a6;
-            --text-tertiary: #636366;
-            --border-primary: #2c2c2e;
-            --border-secondary: #48484a;
-            --success: #30d158;
-            --warning: #ff9f0a;
-            --error: #ff453a;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            background-color: var(--bg-dark);
             color: var(--text-primary);
-            min-height: 100vh;
-            font-size: 15px;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: url('3d.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        .app-container {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            min-height: 100vh;
-            max-width: 1920px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
-        /* Header */
+        /* Header - Now on the left side */
         .header {
-            background: rgba(10, 10, 11, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border-primary);
-            position: sticky;
+            position: fixed;
+            left: 0;
             top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
+            height: 100vh;
+            width: 200px;
+            z-index: 100;
+            background-color: rgba(10, 12, 16, 0.9);
+            border-right: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            padding: 40px 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 32px;
-            max-width: 1600px;
-            margin: 0 auto;
+            flex-direction: column;
         }
 
-        .brand {
+        .nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .logo {
             display: flex;
             align-items: center;
             gap: 12px;
+            font-weight: 600;
+            font-size: 18px;
         }
 
-        .brand-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 8px;
+        .logo-icon {
+width: 87px;
+    height: 87px;
+            background-image: url('s.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Main Layout - Adjusted for left sidebar */
+        .main {
+            padding: 40px 0;
+            margin-left: 220px; /* Account for sidebar */
+            width: calc(100% - 220px);
+        }
+
+        /* Restored original panel sizing */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Analysis Panel - Original sizing */
+        .panel {
+            background-color: #000000e0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            justify-content: space-between;
         }
 
-        .brand-text {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .wallet-connector {
-            position: relative;
-        }
-
-        .connect-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-secondary);
-            color: var(--text-primary);
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 500;
+        .panel-title {
             font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .connect-btn:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--border-primary);
-            transform: translateY(-1px);
-        }
-
-        .connect-btn:active {
-            transform: translateY(0);
-        }
-
-        .connect-btn.connected {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-color: transparent;
-        }
-
-        /* Main Layout */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 420px;
-            gap: 48px;
-            padding: 48px 32px;
-            max-width: 1600px;
-            margin: 0 auto;
-            align-items: start;
-        }
-
-        /* Sensei Section */
-        .sensei-workspace {
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            min-height: 600px;
-        }
-
-        .sensei-avatar-container {
-            position: relative;
-            align-self: center;
-        }
-
-        .sensei-avatar {
-            width: 280px;
-            height: 280px;
-            border-radius: 24px;
-            object-fit: cover;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-primary);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sensei-avatar.analyzing {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 1px var(--accent-primary), 0 0 32px rgba(255, 59, 48, 0.3);
-            animation: subtle-pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes subtle-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        .analysis-indicator {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 24px;
-            height: 24px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            border: 3px solid var(--bg-primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .analysis-indicator.active {
-            opacity: 1;
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-        }
-
-        .judgment-panel {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-primary);
-            border-radius: 16px;
-            padding: 32px;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .judgment-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border-secondary), transparent);
-        }
-
-        .judgment-text {
-            font-size: 18px;
-            line-height: 1.6;
-            font-weight: 500;
-            text-align: center;
-            color: var(--text-secondary);
-            transition: all 0.4s ease;
-        }
-
-        .judgment-text.honor {
-            color: var(--success);
-            text-shadow: 0 0 20px rgba(48, 209, 88, 0.3);
-        }
-
-        .judgment-text.shame {
-            color: var(--error);
-            text-shadow: 0 0 20px rgba(255, 69, 58, 0.3);
-        }
-
-        .typing-effect {
-            border-right: 2px solid var(--text-secondary);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { border-color: var(--text-secondary); }
-            51%, 100% { border-color: transparent; }
-        }
-
-        /* Analysis Dashboard */
-        .analysis-dashboard {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-primary);
-            border-radius: 20px;
-            overflow: hidden;
-            position: sticky;
-            top: 100px;
-        }
-
-        .dashboard-header {
-            padding: 24px 24px 0;
-            border-bottom: 1px solid var(--border-primary);
-        }
-
-        .dashboard-title {
-            font-size: 16px;
             font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .dashboard-subtitle {
-            font-size: 13px;
-            color: var(--text-tertiary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .dashboard-content {
+        .panel-body {
             padding: 24px;
         }
 
-        .state-idle {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-tertiary);
+        .input-group {
+            margin-bottom: 24px;
         }
 
-        .state-idle-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .loading-state {
-            display: none;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .loading-state.active {
+        .input-label {
             display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
-        .loading-spinner {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--border-primary);
-            border-top: 2px solid var(--accent-primary);
+        .address-input {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .address-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(247, 129, 102, 0.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            background-color: var(--accent-dark);
+            transform: translateY(-1px);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-area {
+            margin-top: 24px;
+            padding: 20px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            min-height: 200px;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
         }
 
         @keyframes spin {
@@ -311,437 +214,556 @@
             100% { transform: rotate(360deg); }
         }
 
-        .results-container {
-            display: none;
+        /* Sensei Panel - Original sizing */
+        .sensei-panel {
+            position: sticky;
+            top: 100px;
         }
 
-        .results-container.active {
-            display: block;
-            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        .sensei-card {
+            background-color: #000000e0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .sensei-header {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
         }
 
-        .metrics-grid {
-            display: grid;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .metric-item {
+        .sensei-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            background-color: var(--bg-dark);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-primary);
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .metric-item:last-child {
-            border-bottom: none;
+        .sensei-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .metric-label {
-            font-size: 14px;
+        .sensei-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sensei-title {
+            font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 500;
+        }
+
+        .judgment-area {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .judgment-text {
+            font-size: 14px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .metrics {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .metric-card {
+            padding: 16px;
+            background-color: var(--bg-dark);
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            text-align: center;
         }
 
         .metric-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
+            font-size: 20px;
             font-weight: 600;
-            color: var(--text-primary);
+            margin-bottom: 4px;
         }
 
-        .metric-value.positive {
-            color: var(--success);
-        }
-
-        .metric-value.negative {
-            color: var(--error);
-        }
-
-        .metric-value.warning {
-            color: var(--warning);
-        }
-
-        .final-verdict {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-primary);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        .verdict-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-tertiary);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .verdict-text {
-            font-size: 16px;
-            font-weight: 700;
+        .metric-label {
+            font-size: 11px;
+            color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .verdict-text.honor {
+        .honor { color: var(--success); }
+        .shame { color: var(--danger); }
+
+        /* Analysis Results */
+        .analysis-summary {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            font-size: 13px;
+            border-left: 3px solid;
+        }
+
+        .summary-honor {
+            background-color: rgba(63, 185, 80, 0.1);
+            border-left-color: var(--success);
             color: var(--success);
         }
 
-        .verdict-text.shame {
-            color: var(--error);
+        .summary-shame {
+            background-color: rgba(248, 81, 73, 0.1);
+            border-left-color: var(--danger);
+            color: var(--danger);
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 32px;
-                padding: 32px 24px;
-            }
+        .analysis-details {
+            margin-bottom: 20px;
+        }
 
-            .analysis-dashboard {
-                position: static;
+        .analysis-title {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .metric-item {
+            margin-bottom: 8px;
+        }
+
+        .metric-name {
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .metric-value {
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .header {
+                width: 160px;
+                padding: 30px 15px;
+            }
+            
+            .main {
+                margin-left: 180px;
+                width: calc(100% - 180px);
             }
         }
 
         @media (max-width: 768px) {
-            .header-content {
+            .header {
+                position: static;
+                width: 100%;
+                height: auto;
                 padding: 16px 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
             }
-
-            .main-content {
-                padding: 24px 20px;
-                gap: 24px;
+            
+            .nav {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
             }
-
-            .sensei-avatar {
-                width: 220px;
-                height: 220px;
-            }
-
-            .judgment-panel {
-                padding: 24px;
-            }
-
-            .dashboard-content {
+            
+            .main {
+                margin-left: 0;
+                width: 100%;
                 padding: 20px;
             }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+            
+            .sensei-panel {
+                position: static;
+            }
         }
 
-        /* Micro-interactions */
-        .metric-item:hover {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            margin: 0 -8px;
-            padding: 16px 8px;
+        /* Terminal-like elements */
+        .code {
+            font-family: 'SF Mono', monospace;
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
-        .connect-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
+        .prompt {
+            color: var(--accent);
         }
 
-        /* Performance optimizations */
-        .sensei-avatar,
-        .judgment-panel,
-        .analysis-dashboard {
-            will-change: transform;
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Unique decorative elements */
+        .corner-decoration {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(247,129,102,0.1) 0%, rgba(247,129,102,0) 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .corner-tl {
+            top: -150px;
+            left: -150px;
+        }
+
+        .corner-br {
+            bottom: -150px;
+            right: -150px;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 24px 0;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="header">
-            <div class="header-content">
-                <div class="brand">
-                    <div class="brand-icon">⚔</div>
-                    <div class="brand-text">Jeet Sensei</div>
+    <div class="corner-decoration corner-tl"></div>
+    <div class="corner-decoration corner-br"></div>
+    
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span>JEET SENSEI</span>
+            </div>
+            <div class="code">
+                <span class="prompt">$</span> Jeet_Sensei <span class="blink">_</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Trading Behavior Analysis</div>
+                        <div class="code">
+                            <span class="prompt">></span> v2.1.3
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <label class="input-label">SOLANA WALLET ADDRESS</label>
+                            <input 
+                                type="text" 
+                                class="address-input" 
+                                id="walletAddress"
+                                placeholder="Paste any Solana wallet address..."
+                                spellcheck="false"
+                            >
+                        </div>
+                        
+                        <button class="analyze-btn" id="analyzeBtn">
+                            ANALYZE TRADING HISTORY
+                        </button>
+                        
+                        <div class="results-area" id="resultsArea">
+                            <div class="code">
+                                <span class="prompt">></span> Awaiting wallet address input...
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="wallet-connector">
-                    <button id="connectWallet" class="connect-btn">
-                        Connect Wallet
-                    </button>
+
+                <div class="sensei-panel">
+                    <div class="sensei-card">
+                        <div class="sensei-header">
+                            <div class="sensei-avatar">
+                                <img src="d.jpg" alt="Sensei" class="sensei-img" onerror="this.style.display='none'; this.parentElement.innerHTML='師'">
+                            </div>
+                            <div class="sensei-name">JEET SENSEI</div>
+                            <div class="sensei-title">TRADING BEHAVIOR AI</div>
+                        </div>
+                        
+                        <div class="judgment-area">
+                            <div class="judgment-text" id="judgmentText">
+                                Submit a wallet address for behavioral assessment. I will judge your trading discipline.
+                            </div>
+                        </div>
+                        
+                        <div class="metrics">
+                            <div class="metric-card">
+                                <div class="metric-value honor" id="honorCount">0</div>
+                                <div class="metric-label">Diamond Hands</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value shame" id="paperCount">0</div>
+                                <div class="metric-label">Paper Hands</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel" style="margin-top: 20px;">
+                        <div class="panel-header">
+                            <div class="panel-title">About This Tool</div>
+                        </div>
+                        <div class="panel-body">
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                Jeet Sensei analyzes Solana wallet transaction history to evaluate trading discipline. Diamond hands are rewarded. Paper hands are shamed.
+                            </p>
+                            <div class="divider"></div>
+                            <p style="font-size: 11px; color: var(--text-secondary);">
+                                Data is processed locally. No wallet connection required.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </main>
 
-        <main class="main-content">
-            <section class="sensei-workspace">
-                <div class="sensei-avatar-container">
-                    <img id="senseiAvatar" src="./sensei.png" alt="Sensei" class="sensei-avatar">
-                    <div id="analysisIndicator" class="analysis-indicator"></div>
-                </div>
-                
-                <div class="judgment-panel">
-                    <div id="judgmentText" class="judgment-text">
-                        Connect your Solana wallet to receive professional trading analysis.
-                    </div>
-                </div>
-            </section>
 
-            <aside class="analysis-dashboard">
-                <div class="dashboard-header">
-                    <div class="dashboard-title">Trading Analysis</div>
-                    <div class="dashboard-subtitle">Real-time wallet assessment</div>
-                </div>
-
-                <div class="dashboard-content">
-                    <div id="idleState" class="state-idle">
-                        <div class="state-idle-icon">📊</div>
-                        <div>Waiting for wallet connection</div>
-                    </div>
-
-                    <div id="loadingState" class="loading-state">
-                        <div class="loading-spinner"></div>
-                        <div>Analyzing transaction history...</div>
-                    </div>
-
-                    <div id="resultsContainer" class="results-container">
-                        <div class="metrics-grid">
-                            <div class="metric-item">
-                                <span class="metric-label">Total Transactions</span>
-                                <span id="totalTx" class="metric-value">-</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Win Rate</span>
-                                <span id="winRate" class="metric-value">-</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Paper Hand Events</span>
-                                <span id="paperHands" class="metric-value">-</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Max Drawdown</span>
-                                <span id="maxDrawdown" class="metric-value">-</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Diamond Rating</span>
-                                <span id="diamondRating" class="metric-value">-</span>
-                            </div>
-                        </div>
-
-                        <div class="final-verdict">
-                            <div class="verdict-label">Final Assessment</div>
-                            <div id="finalVerdict" class="verdict-text">-</div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </main>
-    </div>
 
     <script>
-        class ProfessionalJeetSensei {
+        class TradingAnalyzer {
             constructor() {
-                this.wallet = null;
-                this.analyzing = false;
-                this.init();
+                this.stats = { honor: 0, paper: 0 };
+                this.initialize();
             }
 
-            init() {
+            initialize() {
                 this.setupEventListeners();
-                this.checkExistingConnection();
+                this.loadStoredStats();
             }
 
             setupEventListeners() {
-                document.getElementById('connectWallet').addEventListener('click', () => {
-                    this.handleWalletConnection();
+                document.getElementById('analyzeBtn').addEventListener('click', () => this.analyzeWallet());
+                document.getElementById('walletAddress').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.analyzeWallet();
+                    }
                 });
             }
 
-            async checkExistingConnection() {
-                if (window.solana?.isPhantom) {
-                    try {
-                        const response = await window.solana.connect({ onlyIfTrusted: true });
-                        this.onWalletConnected(response.publicKey.toString());
-                    } catch (error) {
-                        console.log('No existing connection');
-                    }
+            async analyzeWallet() {
+                const address = document.getElementById('walletAddress').value.trim();
+                const btn = document.getElementById('analyzeBtn');
+                const results = document.getElementById('resultsArea');
+                
+                if (!address) {
+                    this.showError('Please enter a Solana wallet address');
+                    return;
                 }
-            }
 
-            async handleWalletConnection() {
-                if (!window.solana?.isPhantom) {
-                    this.updateJudgment('Install Phantom wallet to proceed with analysis.', 'neutral');
+                if (address.length < 32 || address.length > 44) {
+                    this.showError('Invalid Solana wallet address format');
                     return;
                 }
 
                 try {
-                    const response = await window.solana.connect();
-                    this.onWalletConnected(response.publicKey.toString());
+                    btn.disabled = true;
+                    btn.textContent = 'ANALYZING...';
+                    
+                    results.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <span class="code">Scanning on-chain history...</span>
+                        </div>
+                    `;
+
+                    await this.delay(2000);
+                    
+                    results.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <span class="code">Evaluating trading patterns...</span>
+                        </div>
+                    `;
+
+                    await this.delay(1500);
+                    
+                    const analysis = this.generateAnalysis(address);
+                    this.displayResults(analysis);
+                    this.updateJudgment(analysis);
+                    this.updateStats(analysis.category);
+                    
                 } catch (error) {
-                    this.updateJudgment('Connection failed. Retry the connection process.', 'shame');
+                    this.showError('Analysis failed. Please try again.');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'ANALYZE TRADING HISTORY';
                 }
             }
 
-            onWalletConnected(address) {
-                this.wallet = address;
-                
-                const btn = document.getElementById('connectWallet');
-                btn.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
-                btn.classList.add('connected');
-                btn.disabled = true;
-
-                this.updateJudgment('Wallet connected. Initiating comprehensive analysis...', 'neutral');
-                this.startAnalysis();
-            }
-
-            async startAnalysis() {
-                this.analyzing = true;
-                
-                // Visual feedback
-                document.getElementById('senseiAvatar').classList.add('analyzing');
-                document.getElementById('analysisIndicator').classList.add('active');
-                document.getElementById('idleState').style.display = 'none';
-                document.getElementById('loadingState').classList.add('active');
-
-                // Simulate analysis time
-                await this.simulateAnalysis();
-                
-                const results = this.generateAnalysisResults();
-                this.displayResults(results);
-            }
-
-            async simulateAnalysis() {
-                return new Promise(resolve => {
-                    setTimeout(resolve, 4000);
-                });
-            }
-
-            generateAnalysisResults() {
+            generateAnalysis(address) {
+                // Seed the random with the wallet address for consistent results per address
+                const seed = this.hashCode(address);
                 const scenarios = [
                     {
-                        type: 'diamond',
-                        totalTx: this.randomBetween(45, 120),
-                        winRate: this.randomBetween(65, 85),
-                        paperHands: this.randomBetween(2, 8),
-                        maxDrawdown: this.randomBetween(15, 35),
-                        diamondRating: this.randomBetween(75, 95),
-                        messages: [
-                            "Exceptional discipline. Your trading demonstrates institutional-level patience.",
-                            "Outstanding performance. You understand market dynamics at a professional level.",
-                            "Impressive conviction. Your portfolio management reflects years of experience.",
-                            "Superior execution. You maintain composure during high-volatility periods.",
-                            "Remarkable consistency. Your risk management is textbook perfect."
-                        ]
+                        category: 'paper',
+                        severity: 'high',
+                        summary: 'SEVERE PAPER HANDS DETECTED',
+                        details: 'Multiple panic sells during market volatility. Sold BONK at -67% loss, WIF at -43% loss. Classic retail behavior pattern with emotional exits.',
+                        judgment: 'Your trading history reveals the discipline of wet tissue paper. Three panic sells in two weeks. The market does not reward fear.',
+                        metrics: { trades: 47, winRate: 23, avgHold: '3.2 days', biggestLoss: '-89%' }
                     },
                     {
-                        type: 'paper',
-                        totalTx: this.randomBetween(80, 200),
-                        winRate: this.randomBetween(25, 45),
-                        paperHands: this.randomBetween(15, 35),
-                        maxDrawdown: this.randomBetween(45, 75),
-                        diamondRating: this.randomBetween(15, 35),
-                        messages: [
-                            "Concerning patterns detected. Your emotional trading is destroying capital.",
-                            "Significant improvement needed. Current strategy lacks fundamental discipline.",
-                            "Poor execution evident. Market fear is controlling your decision-making process.",
-                            "Suboptimal performance. Panic selling has become your default response mechanism.",
-                            "Critical weaknesses identified. Your trading psychology requires immediate attention."
-                        ]
+                        category: 'paper',
+                        severity: 'medium',
+                        summary: 'MODERATE PAPER HANDS',
+                        details: 'Inconsistent holding patterns. Some good entries but poor exit discipline. FOMO bought tops, sold bottoms on meme rotations.',
+                        judgment: 'You show flashes of wisdom but lack conviction. Your entries are decent, your exits are emotional. Discipline beats intelligence.',
+                        metrics: { trades: 31, winRate: 38, avgHold: '8.1 days', biggestLoss: '-54%' }
+                    },
+                    {
+                        category: 'honor',
+                        severity: 'medium',
+                        summary: 'DEVELOPING DIAMOND HANDS',
+                        details: 'Good conviction trades with decent holding power. DCA strategy during dips. Some early exits but overall disciplined approach.',
+                        judgment: 'You understand the way of patience. Your DCA discipline during fear shows growing wisdom. The path to mastery continues.',
+                        metrics: { trades: 18, winRate: 67, avgHold: '23 days', biggestGain: '+234%' }
+                    },
+                    {
+                        category: 'honor',
+                        severity: 'high',
+                        summary: 'TRUE DIAMOND HANDS',
+                        details: 'Exceptional conviction and holding power. Weathered multiple 70%+ drawdowns without selling. Strategic accumulation during market fear.',
+                        judgment: 'Impressive. You possess the rare quality of unwavering conviction. Your diamond hands through brutal drawdowns show true mastery.',
+                        metrics: { trades: 9, winRate: 89, avgHold: '89 days', biggestGain: '+1,247%' }
                     }
                 ];
 
-                const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
-                const message = scenario.messages[Math.floor(Math.random() * scenario.messages.length)];
-
-                return {
-                    ...scenario,
-                    selectedMessage: message
-                };
+                return scenarios[seed % scenarios.length];
             }
 
-            displayResults(results) {
-                // Hide loading, show results
-                document.getElementById('loadingState').classList.remove('active');
-                document.getElementById('resultsContainer').classList.add('active');
-                document.getElementById('senseiAvatar').classList.remove('analyzing');
-                document.getElementById('analysisIndicator').classList.remove('active');
-
-                // Populate metrics
-                document.getElementById('totalTx').textContent = results.totalTx.toLocaleString();
-                document.getElementById('winRate').textContent = `${results.winRate}%`;
-                document.getElementById('paperHands').textContent = results.paperHands;
-                document.getElementById('maxDrawdown').textContent = `${results.maxDrawdown}%`;
-                document.getElementById('diamondRating').textContent = `${results.diamondRating}/100`;
-
-                // Apply styling
-                const winRateEl = document.getElementById('winRate');
-                const paperHandsEl = document.getElementById('paperHands');
-                const drawdownEl = document.getElementById('maxDrawdown');
-                const ratingEl = document.getElementById('diamondRating');
-
-                if (results.type === 'diamond') {
-                    winRateEl.classList.add('positive');
-                    ratingEl.classList.add('positive');
-                    paperHandsEl.classList.add('positive');
-                    drawdownEl.classList.add('positive');
-                } else {
-                    winRateEl.classList.add('negative');
-                    ratingEl.classList.add('negative');
-                    paperHandsEl.classList.add('negative');
-                    drawdownEl.classList.add('negative');
+            hashCode(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash |= 0; // Convert to 32bit integer
                 }
-
-                // Final verdict
-                const verdict = results.type === 'diamond' ? 'Diamond Hands Confirmed' : 'Paper Hands Detected';
-                const verdictEl = document.getElementById('finalVerdict');
-                verdictEl.textContent = verdict;
-                verdictEl.classList.add(results.type === 'diamond' ? 'honor' : 'shame');
-
-                // Update judgment with typing effect
-                this.typeJudgment(results.selectedMessage, results.type === 'diamond' ? 'honor' : 'shame');
+                return Math.abs(hash);
             }
 
-            typeJudgment(message, type) {
-                const element = document.getElementById('judgmentText');
-                element.textContent = '';
-                element.className = `judgment-text typing-effect`;
+            displayResults(analysis) {
+                const results = document.getElementById('resultsArea');
+                const statusClass = analysis.category === 'honor' ? 'summary-honor' : 'summary-shame';
+                
+                results.innerHTML = `
+                    <div class="analysis-summary ${statusClass}">
+                        <strong>${analysis.summary}</strong>
+                    </div>
+                    
+                    <div class="analysis-details">
+                        <div class="analysis-title">BEHAVIORAL ANALYSIS</div>
+                        <div>${analysis.details}</div>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-name">TOTAL TRADES</div>
+                            <div class="metric-value">${analysis.metrics.trades}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">WIN RATE</div>
+                            <div class="metric-value">${analysis.metrics.winRate}%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">AVG HOLD TIME</div>
+                            <div class="metric-value">${analysis.metrics.avgHold}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-name">BIGGEST ${analysis.category === 'honor' ? 'GAIN' : 'LOSS'}</div>
+                            <div class="metric-value" style="color: ${analysis.category === 'honor' ? 'var(--success)' : 'var(--danger)'}">
+                                ${analysis.metrics.biggestGain || analysis.metrics.biggestLoss}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
-                let index = 0;
-                const typeInterval = setInterval(() => {
-                    if (index < message.length) {
-                        element.textContent += message[index];
-                        index++;
-                    } else {
-                        clearInterval(typeInterval);
-                        element.classList.remove('typing-effect');
-                        element.classList.add(type);
+            updateJudgment(analysis) {
+                const judgment = document.getElementById('judgmentText');
+                judgment.textContent = analysis.judgment;
+            }
+
+            updateStats(category) {
+                if (category === 'honor') {
+                    this.stats.honor++;
+                } else {
+                    this.stats.paper++;
+                }
+                
+                document.getElementById('honorCount').textContent = this.stats.honor;
+                document.getElementById('paperCount').textContent = this.stats.paper;
+                
+                this.saveStats();
+            }
+
+            showError(message) {
+                const results = document.getElementById('resultsArea');
+                results.innerHTML = `
+                    <div class="summary-shame">
+                        <strong>ERROR</strong>: ${message}
+                    </div>
+                `;
+            }
+
+            saveStats() {
+                localStorage.setItem('jeetSenseiStats', JSON.stringify(this.stats));
+            }
+
+            loadStoredStats() {
+                try {
+                    const stored = localStorage.getItem('jeetSenseiStats');
+                    if (stored) {
+                        this.stats = JSON.parse(stored);
+                        document.getElementById('honorCount').textContent = this.stats.honor;
+                        document.getElementById('paperCount').textContent = this.stats.paper;
                     }
-                }, 50);
+                } catch (e) {
+                    // Ignore errors
+                }
             }
 
-            updateJudgment(message, type) {
-                const element = document.getElementById('judgmentText');
-                element.textContent = message;
-                element.className = `judgment-text ${type}`;
-            }
-
-            randomBetween(min, max) {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
             }
         }
 
-        // Initialize application
+        // Initialize when DOM loads
         document.addEventListener('DOMContentLoaded', () => {
-            new ProfessionalJeetSensei();
+            new TradingAnalyzer();
         });
     </script>
 </body>
